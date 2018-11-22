@@ -1,0 +1,83 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Weather Forecast API",
+      "description": "Weather Forecast API",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "localhost:3000",
+    "basePath": "/api/v1",
+    "tags": [
+      {
+        "name": "Weather",
+        "description": "API for weather forecast"
+      }
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/weather": {
+        "parameters": [
+            {
+              "name": "lat",
+              "in": "query",
+              "required": true,
+              "description": "latitude to the city to find the forecast",
+              "type": "string"
+            },
+            {
+                "name": "long",
+                "in": "query",
+                "required": true,
+                "description": "longitude to the city to find the forecast",
+                "type": "string"
+              }
+        ],
+        "get": {
+          "tags": [
+            "Weather"
+          ],
+          "summary": "Get the weather forecast by geolocation",
+          "responses": {
+            "200": {
+              "description": "OK",
+              "schema": {
+                "type": "object",
+                "properties": {
+                    "latitude": {
+                        "type":"integer",
+                        "description":"the latitude of the city"
+                    },
+                    "longitude": {
+                        "type":"integer",
+                        "description":"the longitude of the city"
+                    },
+                    "timezone": {
+                        "type":"string",
+                        "description":"the timezone of the city"
+                    },
+                    "currently": {
+                        "type":"object",
+                        "description":"the current forecast of the city"
+                    },
+                    "offset": {
+                        "type":"integer",
+                        "description":"the offset of the info"
+                    }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
