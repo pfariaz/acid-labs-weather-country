@@ -1,0 +1,26 @@
+version: '3'
+services:
+  traefik:
+    image: traefik
+    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+api:
+    build: ./api
+    labels:
+      - "traefik.backend=api"
+      - "traefik.frontend.rule=Host:${BASE_URL_APP};PathPrefix:/api"
+    links:
+      - "redis:redis"
+    depends_on: 
+      - redis
+client:
+    build: ./client
+    labels:
+      - "traefik.backend=client"
+      - "traefik.frontend.rule=Host:${BASE_URL_APP}"
+  redis:
+    image: redis:latest
