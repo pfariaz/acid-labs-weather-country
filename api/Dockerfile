@@ -1,5 +1,5 @@
-FROM node:10.12.0-alpine
-
+# Use a lighter version of Node as a parent image
+FROM node:10.13.0
 # Set the working directory to /api
 WORKDIR /api
 # copy package.json into the container at /api
@@ -10,4 +10,4 @@ RUN npm install
 COPY . /api/
 
 EXPOSE 8000
-CMD npm start
+CMD ["npm", "start"]
