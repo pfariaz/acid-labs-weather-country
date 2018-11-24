@@ -7,4 +7,4 @@ COPY package.json package.json
 RUN npm install
 
 EXPOSE 8000
-CMD node bin/www
+CMD npm start
