@@ -1,10 +1,16 @@
 FROM node:10.12.0-alpine
 
-COPY package-lock.json package-lock.json
-COPY app.js app.js
-COPY package.json package.json
+# this makes the build fail in travis (with permission denied to run yarn)
+# RUN npm install --global yarn
 
-RUN npm install
+COPY package.json .
+COPY yarn.lock .
+
+RUN yarn install
+
+COPY . . 
+
+ENV NODE_ENV=production
 
 EXPOSE 8000
 CMD npm start
