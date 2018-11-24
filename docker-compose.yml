@@ -1,26 +1,31 @@
-version: '3'
+version: '3.4'
 services:
-  traefik:
+  traefik: 
+    command: "--web --docker --docker.domain=docker.localhost --logLevel=DEBUG"
     image: traefik
-    command: --web --docker --docker.domain=docker.localhost --logLevel=DEBUG
-    ports:
+    ports: 
       - "80:80"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /dev/null:/traefik.toml
-api:
-    build: ./api
-    labels:
-      - "traefik.backend=api"
-      - "traefik.frontend.rule=Host:${BASE_URL_APP};PathPrefix:/api"
+    volumes: 
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/dev/null:/traefik.toml"
+
+  client:
+    build:
+      context: ./client
+    labels: 
+      - traefik.backend=client
+      - "traefik.frontend.rule=Host:${DOMAIN_HOST}"
+
+  api: 
+    build: 
+      context: ./api
+    labels: 
+      - traefik.backend=api
+      - "traefik.frontend.rule=Host:${DOMAIN_HOST};PathPrefix:/api"
     links:
       - "redis:redis"
     depends_on: 
       - redis
-client:
-    build: ./client
-    labels:
-      - "traefik.backend=client"
-      - "traefik.frontend.rule=Host:${BASE_URL_APP}"
-  redis:
-    image: redis:latest
+
+  redis: 
+    image: redis:5.0.0-alpine
