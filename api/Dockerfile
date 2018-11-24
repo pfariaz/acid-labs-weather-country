@@ -1,14 +1,10 @@
-# Use a lighter version of Node as a parent image
-FROM node:10.13.0
-# Set the working directory to /api
-WORKDIR /api
-# copy package.json into the container at /api
-COPY package*.json /api/
-# install dependencies
+FROM node:10.12.0-alpine
+
+COPY package-lock.json package-lock.json
+COPY app.js app.js
+COPY package.json package.json
+
 RUN npm install
-# Copy the current directory contents into the container at /api
-COPY . /api/
-# Make port 80 available to the world outside this container
-EXPOSE 3000
-# Run the app when the container launches
-CMD ["npm", "start"]
+
+EXPOSE 8000
+CMD node bin/www
