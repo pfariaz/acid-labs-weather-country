@@ -4,64 +4,36 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const routes = require('./routes');
+const app = express();
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const cors = require('cors');
 
-const normalizePort = (val) => {
-  const port = parseInt(val, 10);
+app.use(cors());
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-  if (isNaN(port)) {
-    // named pipe
-    return val;
-  }
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-  if (port >= 0) {
-    // port number
-    return port;
-  }
+routes.init(app);
 
-  return false;
-}
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
 
-const init = () => {
-  const app = express();
-  var port = normalizePort(process.env.PORT || '8000');
-  module.exports = app;
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  app.use(cors());
-  app.use(logger('dev'));
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: false }));
-  app.use(cookieParser());
-  app.use(express.static(path.join(__dirname, 'public')));
-  
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
 
-  Promise.resolve()
-    .then(() => {
-      routes.init(app);
-
-      // catch 404 and forward to error handler
-      app.use(function(req, res, next) {
-        next(createError(404));
-      });
-
-      // error handler
-      app.use(function(err, req, res, next) {
-        // set locals, only providing error in development
-        res.locals.message = err.message;
-        res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-        // render the error page
-        res.status(err.status || 500);
-        res.render('error');
-      });
-
-      app.listen(port);
-
-      console.log(`Listening on port: ${port}`);
-    })
-    .catch(console.error);
-};
-init();
+module.exports = app;
