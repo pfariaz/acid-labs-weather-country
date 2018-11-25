@@ -11,29 +11,29 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/dev/null:/traefik.toml"
 
-  client:
-    build:
-      context: ./client
-    labels:
-      - traefik.port=3000
-      - traefik.backend=client
-      - "traefik.frontend.rule=Host:${DOMAIN_HOST}"
+  # client:
+  #   build:
+  #     context: ./client
+  #   labels:
+  #     - traefik.port=3000
+  #     - traefik.backend=client
+  #     - "traefik.frontend.rule=Host:${DOMAIN_HOST}"
 
-  api: 
-    build: 
-      context: ./api
-    labels: 
-      - traefik.port=8000
-      - traefik.backend=api
-      - "traefik.frontend.rule=Host:${DOMAIN_HOST};PathPrefix:/api"
-    links:
-      - "redis:redis"
-    depends_on: 
-      - redis
-    environment:
-      PORT: ${PORT}
-      REDIS_HOST: redis
-      REDIS_PORT: ${REDIS_PORT}
+  # api: 
+  #   build: 
+  #     context: ./api
+  #   labels: 
+  #     - traefik.port=8000
+  #     - traefik.backend=api
+  #     - "traefik.frontend.rule=Host:${DOMAIN_HOST};PathPrefix:/api"
+  #   links:
+  #     - "redis:redis"
+  #   depends_on: 
+  #     - redis
+  #   environment:
+  #     PORT: ${PORT}
+  #     REDIS_HOST: redis
+  #     REDIS_PORT: ${REDIS_PORT}
 
-  redis: 
-    image: redis:5.0.0-alpine
+  # redis: 
+  #   image: redis:5.0.0-alpine
