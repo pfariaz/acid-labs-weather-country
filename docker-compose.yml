@@ -1,37 +1,39 @@
 version: '3.4'
 services:
-  reverse-proxy:
-    image: traefik # The official Traefik docker image
-    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
-    ports:
-      - "80:80"     # The HTTP port
-      - "8080:8080" # The Web UI (enabled by --api)
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+  traefik: 
+    command: "--web --docker --docker.domain=docker.localhost --logLevel=DEBUG"
+    image: traefik
+    ports: 
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    volumes: 
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/dev/null:/traefik.toml"
 
-  # client:
-  #   build:
-  #     context: ./client
-  #   labels:
-  #     - traefik.port=3000
-  #     - traefik.backend=client
-  #     - "traefik.frontend.rule=Host:${DOMAIN_HOST}"
+  client:
+    build:
+      context: ./client
+    labels:
+      - traefik.port=3000
+      - "traefik.backend=acid-weather-app"
+      - "traefik.frontend.rule=Host:${DOMAIN_HOST}"
 
-  # api: 
-  #   build: 
-  #     context: ./api
-  #   labels: 
-  #     - traefik.port=8000
-  #     - traefik.backend=api
-  #     - "traefik.frontend.rule=Host:${DOMAIN_HOST};PathPrefix:/api"
-  #   links:
-  #     - "redis:redis"
-  #   depends_on: 
-  #     - redis
-  #   environment:
-  #     PORT: ${PORT}
-  #     REDIS_HOST: redis
-  #     REDIS_PORT: ${REDIS_PORT}
+  api: 
+    build: 
+      context: ./api
+    labels: 
+      - traefik.port=8000
+      - "traefik.backend=acid-weather-api"
+      - "traefik.frontend.rule=Host:api.${DOMAIN_HOST}"
+    links:
+      - "redis:redis"
+    depends_on: 
+      - redis
+    environment:
+      PORT: ${PORT}
+      REDIS_HOST: redis
+      REDIS_PORT: ${REDIS_PORT}
 
-  # redis: 
-  #   image: redis:5.0.0-alpine
+  redis: 
+    image: redis:5.0.0-alpine
