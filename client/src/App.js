@@ -62,6 +62,7 @@ class App extends Component {
   };
   
   render() {
+    console.log(`KEY: ${REACT_APP_GOOGLE_API_KEY}`);
     const { open, country, capitalCity, currentTemp } = this.state;
     return (
       <div>
