@@ -25,6 +25,7 @@ services:
     labels: 
       - traefik.port=8000
       - "traefik.backend=acid-weather-api"
+      - "traefik.frontend.rule=Host:${DOMAIN_HOST};PathPrefixStrip:/api"
     links:
       - "redis:redis"
     depends_on: 
