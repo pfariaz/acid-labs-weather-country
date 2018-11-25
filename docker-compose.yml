@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   traefik: 
-    command: "--web --docker --docker.domain=docker.localhost --logLevel=ERROR"
+    command: "--web --docker --docker.domain=docker.localhost --logLevel=DEBUG"
     image: traefik
     ports: 
       - "80:80"
