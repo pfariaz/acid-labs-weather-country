@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   traefik: 
-    command: "--web --docker --docker.domain=docker.localhost --logLevel=DEBUG"
+    command: "--web --docker --docker.domain=docker.localhost"
     image: traefik
     ports: 
       - "80:80"
@@ -15,7 +15,7 @@ services:
     labels:
       - traefik.port=3000
       - traefik.backend=client
-      - "traefik.frontend.rule=Host:${DOMAIN_HOST}"
+      - "traefik.frontend.rule=Host:client.docker.localhost"
 
   api: 
     build: 
@@ -23,7 +23,7 @@ services:
     labels: 
       - traefik.port=8000
       - traefik.backend=api
-      - "traefik.frontend.rule=Host:${DOMAIN_HOST};PathPrefix:/api"
+      - "traefik.frontend.rule=Host:api.docker.localhost;PathPrefix:/api"
     links:
       - "redis:redis"
     depends_on: 
