@@ -5,6 +5,7 @@ services:
     image: traefik
     ports: 
       - "80:80"
+      - "443:443"
     volumes: 
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/dev/null:/traefik.toml"
@@ -15,7 +16,7 @@ services:
     labels:
       - traefik.port=3000
       - traefik.backend=client
-      - "traefik.frontend.rule=Host:client.docker.localhost"
+      - "traefik.frontend.rule=Host:${DOMAIN_HOST}"
 
   api: 
     build: 
@@ -23,7 +24,7 @@ services:
     labels: 
       - traefik.port=8000
       - traefik.backend=api
-      - "traefik.frontend.rule=Host:api.docker.localhost;PathPrefix:/api"
+      - "traefik.frontend.rule=Host:${DOMAIN_HOST};PathPrefix:/api"
     links:
       - "redis:redis"
     depends_on: 
