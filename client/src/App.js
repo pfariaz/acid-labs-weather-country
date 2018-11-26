@@ -63,7 +63,6 @@ class App extends Component {
   };
   
   render() {
-    console.log(`KEY: ${REACT_APP_GOOGLE_API_KEY}`);
     const { open, country, capitalCity, currentTemp } = this.state;
     return (
       <div>
@@ -76,7 +75,7 @@ class App extends Component {
         />
         <Modal open={open} onClose={this.onCloseModal} center>
           <h3>{country} - {capitalCity}</h3>
-          <h4>Current temperature: {currentTemp}</h4>
+          <h4>Current temperature: {currentTemp} Cº</h4>
         </Modal>
       </div>
     );
