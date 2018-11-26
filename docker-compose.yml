@@ -1,0 +1,39 @@
+version: '3.4'
+services:
+  traefik: 
+    command: "--web --docker --docker.domain=docker.localhost --logLevel=DEBUG"
+    image: traefik
+    ports: 
+      - "80:80"
+      - "8080:8080"
+      - "443:443"
+    volumes: 
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "/dev/null:/traefik.toml"
+
+  client:
+    build:
+      context: ./client
+    labels:
+      - traefik.port=3000
+      - "traefik.backend=acid-weather-app"
+      - "traefik.frontend.rule=Host:${DOMAIN_HOST}"
+
+  api: 
+    build: 
+      context: ./api
+    labels: 
+      - traefik.port=8000
+      - "traefik.backend=acid-weather-api"
+      - "traefik.frontend.rule=Host:${DOMAIN_HOST};PathPrefixStrip:/api"
+    links:
+      - "redis:redis"
+    depends_on: 
+      - redis
+    environment:
+      PORT: ${PORT}
+      REDIS_HOST: redis
+      REDIS_PORT: ${REDIS_PORT}
+
+  redis: 
+    image: redis:5.0.0-alpine

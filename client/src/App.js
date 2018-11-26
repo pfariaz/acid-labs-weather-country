@@ -47,6 +47,7 @@ class App extends Component {
         });
       });
     }).catch(error => {
+      console.log(error);
       this.setState({
         open: true,
         country: 'COUNTRY',
@@ -74,7 +75,7 @@ class App extends Component {
         />
         <Modal open={open} onClose={this.onCloseModal} center>
           <h3>{country} - {capitalCity}</h3>
-          <h4>Current temperature: {currentTemp}</h4>
+          <h4>Current temperature: {currentTemp} Cº</h4>
         </Modal>
       </div>
     );

@@ -2,5 +2,5 @@
 const { getWeather } = require('./controllers/weatherController');
 
 exports.init = app => {
-  app.get('/api/v1/weather', [], getWeather);
+  app.get('/v1/weather', [], getWeather);
 };
