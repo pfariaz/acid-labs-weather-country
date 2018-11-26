@@ -9,8 +9,9 @@ const checkIfRequestFailed = () => {
     }
 }
 
-const getForecast = (latitude, longitude) =>
-    request({
+const getForecast = (latitude, longitude) => {
+    console.log(`STARTING TO REQUEST :${WEATHER_API_URL}/${WEATHER_API_KEY}/${latitude},${longitude}`)
+    return request({
         url: `${WEATHER_API_URL}/${WEATHER_API_KEY}/${latitude},${longitude}`,
         method: GET,
         timeout: 60000,
@@ -19,6 +20,7 @@ const getForecast = (latitude, longitude) =>
         },
         json: true,
     }, true).then(res => res.body);
+};
 
 const getForecastByCoordinates = (latitude, longitude) => {
     const redisKeyResponse = `${latitude},${longitude}`;
@@ -27,13 +29,12 @@ const getForecastByCoordinates = (latitude, longitude) => {
         return getForecastByCoordinates(latitude, longitude);
     }
     return read(redisKeyResponse).then(responseCached => {
-        console.log(responseCached);
         if(!responseCached) return getForecast(latitude, longitude).then(resp =>
             write(redisKeyResponse, resp, 60*60).then(() => resp));
         return responseCached;
     });
    
-}
+};
 
 module.exports = {getForecastByCoordinates};
     
